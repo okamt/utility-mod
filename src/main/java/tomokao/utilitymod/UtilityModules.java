@@ -73,7 +73,12 @@ public class UtilityModules {
     }
 
     public static final Module moduleList = new Module("Module List").enabled().withKeyBinding(Keyboard.KEY_RSHIFT);
-    public static final Module autoWalk = new Module("Auto Walk");
+    public static final Module autoWalk = new Module("Auto Walk", enabled -> {
+        if (!enabled) {
+            var minecraft = UtilityUtils.getMinecraft();
+            minecraft.player.playerKeypressManager.onKeyPressed(minecraft.options.forwardKey.key, false);
+        }
+    });
     public static final Module xray = new Module("X-ray");
     public static final Module tracer = new Module("Tracer");
 
