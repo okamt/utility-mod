@@ -3,7 +3,7 @@ package tomokao.utilitymod;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.mine_diver.unsafeevents.listener.EventListener;
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.options.KeyBinding;
 import net.modificationstation.stationapi.api.client.event.keyboard.KeyStateChangedEvent;
 import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegisterEvent;
 import org.lwjgl.input.Keyboard;
@@ -59,7 +59,7 @@ public class UtilityModules {
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
             try {
-                UtilityUtils.getMinecraft().inGameHud.addChatMessage(id + (enabled ? " enabled." : " disabled."));
+                UtilityUtils.getMinecraft().overlay.addChatMessage(id + (enabled ? " enabled." : " disabled."));
             } catch (Exception e) {}
             if (callback != null) {
                 callback.accept(enabled);
@@ -90,7 +90,7 @@ public class UtilityModules {
     @EventListener
     public void keyPressed(KeyStateChangedEvent event) {
         for (var module : UtilityModules.getModules()) {
-            if (Keyboard.getEventKeyState() && Keyboard.isKeyDown(module.getKeyBinding().code)) {
+            if (Keyboard.getEventKeyState() && Keyboard.isKeyDown(module.getKeyBinding().key)) {
                 module.toggle();
             }
         }
