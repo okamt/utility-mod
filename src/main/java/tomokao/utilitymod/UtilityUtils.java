@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 @Environment(EnvType.CLIENT)
 public class UtilityUtils {
     public static Minecraft getMinecraft() {
+        //noinspection deprecation
         return ((Minecraft) FabricLoader.getInstance().getGameInstance());
     }
 }
