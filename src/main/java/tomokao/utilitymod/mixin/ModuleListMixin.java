@@ -10,7 +10,7 @@ import tomokao.utilitymod.UtilityModules;
 import tomokao.utilitymod.UtilityUtils;
 
 @Mixin(InGame.class)
-public abstract class InGameMixin extends DrawableHelper {
+public abstract class ModuleListMixin extends DrawableHelper {
 	@Inject(at = @At("RETURN"), method = "renderHud", remap = false)
 	private void renderHud(CallbackInfo ci) {
 		if (UtilityModules.moduleList.isEnabled()) {
