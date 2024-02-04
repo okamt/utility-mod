@@ -15,7 +15,7 @@ public abstract class InGameMixin extends DrawableHelper {
 	private void renderHud(CallbackInfo ci) {
 		if (UtilityModules.moduleList.isEnabled()) {
 			final int[] y = {2};
-			UtilityModules.getModules().stream().filter(m -> m.isEnabled()).forEach(m -> {
+			UtilityModules.getModules().stream().filter(UtilityModules.Module::isEnabled).forEach(m -> {
 				UtilityUtils.getMinecraft().textRenderer.drawTextWithShadow(m.id, 2, y[0], 0xffffff);
 				y[0] += 10;
 			});

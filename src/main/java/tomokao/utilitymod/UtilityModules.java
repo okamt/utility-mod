@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 @Environment(EnvType.CLIENT)
 public class UtilityModules {
-    private static List<Module> modules = new ArrayList();
+    private static final ArrayList<Module> modules = new ArrayList<>();
 
     public static List<Module> getModules() {
         return Collections.unmodifiableList(modules);
@@ -47,6 +47,7 @@ public class UtilityModules {
             return this;
         }
 
+        @SuppressWarnings("SameParameterValue")
         private Module withKeyBinding(int key) {
             keyBinding = new KeyBinding(id, key);
             return this;
@@ -60,7 +61,7 @@ public class UtilityModules {
             this.enabled = enabled;
             try {
                 UtilityUtils.getMinecraft().overlay.addChatMessage(id + (enabled ? " enabled." : " disabled."));
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
             if (callback != null) {
                 callback.accept(enabled);
             }
@@ -71,10 +72,10 @@ public class UtilityModules {
         }
     }
 
-    public static Module moduleList = new Module("Module List").enabled().withKeyBinding(Keyboard.KEY_RSHIFT);
-    public static Module autoWalk = new Module("Auto Walk");
-    public static Module xray = new Module("X-ray");
-    public static Module tracer = new Module("Tracer");
+    public static final Module moduleList = new Module("Module List").enabled().withKeyBinding(Keyboard.KEY_RSHIFT);
+    public static final Module autoWalk = new Module("Auto Walk");
+    public static final Module xray = new Module("X-ray");
+    public static final Module tracer = new Module("Tracer");
 
     @EventListener
     public void registerKeyBindings(KeyBindingRegisterEvent event) {
@@ -88,7 +89,7 @@ public class UtilityModules {
     }
 
     @EventListener
-    public void keyPressed(KeyStateChangedEvent event) {
+    public void keyPressed(KeyStateChangedEvent ignoredEvent) {
         for (var module : UtilityModules.getModules()) {
             if (Keyboard.getEventKeyState() && Keyboard.isKeyDown(module.getKeyBinding().key)) {
                 module.toggle();
