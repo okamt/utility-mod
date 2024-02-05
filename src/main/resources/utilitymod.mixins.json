@@ -10,6 +10,7 @@
   "client": [
     "AreaRendererMixin",
     "BlockMixin",
+    "EntityMixin",
     "InGameMixin",
     "MovementManagerMixin"
   ],
