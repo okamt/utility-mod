@@ -13,7 +13,7 @@ public abstract class MovementManagerMixin {
     @Shadow
     private boolean[] keys = new boolean[10];
 
-    @Inject(at = @At("HEAD"), method = "updatePlayer", remap = false)
+    @Inject(at = @At("HEAD"), method = "updatePlayer")
     private void updatePlayer(CallbackInfo ci) {
         if (UtilityModules.autoWalk.isEnabled()) {
             keys[0] = true;
