@@ -10,9 +10,12 @@
   "client": [
     "AreaRendererMixin",
     "BlockMixin",
+    "ControlsScreenMixin",
     "EntityMixin",
     "InGameMixin",
-    "MovementManagerMixin"
+    "MovementManagerMixin",
+    "MultiPlayerClientInteractionManagerMixin",
+    "SinglePlayerClientInteractionManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

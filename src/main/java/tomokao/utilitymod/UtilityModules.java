@@ -80,10 +80,6 @@ public class UtilityModules {
         public final HashSet<Integer> blockIdSet = new HashSet<>();
         private boolean isWhitelist = true;
 
-        public XrayModule(String id) {
-            super(id);
-        }
-
         public XrayModule(String id, Consumer<Boolean> callback) {
             super(id, callback);
         }
@@ -134,12 +130,9 @@ public class UtilityModules {
             minecraft.player.playerKeypressManager.onKeyPressed(minecraft.options.forwardKey.key, false);
         }
     });
-    public static final XrayModule xray = new XrayModule("X-ray", enabled -> {
-        UtilityUtils.getMinecraft().levelRenderer.updateFromOptions();
-    });
-    public static final Module fullBright = new Module("Full Bright", enabled -> {
-        UtilityUtils.getMinecraft().levelRenderer.updateFromOptions();
-    });
+    public static final XrayModule xray = new XrayModule("X-ray", enabled -> UtilityUtils.getMinecraft().levelRenderer.updateFromOptions());
+    public static final Module fullBright = new Module("Full Bright", enabled -> UtilityUtils.getMinecraft().levelRenderer.updateFromOptions());
+    public static final Module noBreakDelay = new Module("No Break Delay");
     public static final Module tracer = new Module("Tracer");
 
     @EventListener
