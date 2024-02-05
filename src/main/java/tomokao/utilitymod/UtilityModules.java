@@ -3,13 +3,16 @@ package tomokao.utilitymod;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.mine_diver.unsafeevents.listener.EventListener;
+import net.minecraft.block.Block;
 import net.minecraft.client.options.KeyBinding;
 import net.modificationstation.stationapi.api.client.event.keyboard.KeyStateChangedEvent;
 import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegisterEvent;
+import net.modificationstation.stationapi.api.event.registry.BlockRegistryEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -61,7 +64,8 @@ public class UtilityModules {
             this.enabled = enabled;
             try {
                 UtilityUtils.getMinecraft().overlay.addChatMessage(id + (enabled ? " enabled." : " disabled."));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             if (callback != null) {
                 callback.accept(enabled);
             }
@@ -72,6 +76,57 @@ public class UtilityModules {
         }
     }
 
+    public static class XrayModule extends Module {
+        public final HashSet<Integer> blockIdSet = new HashSet<>();
+        private boolean isWhitelist = true;
+
+        public XrayModule(String id) {
+            super(id);
+        }
+
+        public XrayModule(String id, Consumer<Boolean> callback) {
+            super(id, callback);
+        }
+
+        private void registerDefaultSet() {
+            Collections.addAll(
+                    blockIdSet,
+                    Block.DIAMOND_ORE.id,
+                    Block.COAL_ORE.id,
+                    Block.GOLD_ORE.id,
+                    Block.IRON_ORE.id,
+                    Block.REDSTONE_ORE.id,
+                    Block.REDSTONE_ORE_LIT.id,
+                    Block.LAPIS_LAZULI_ORE.id,
+
+                    Block.STILL_LAVA.id,
+                    Block.FLOWING_LAVA.id,
+                    Block.STILL_WATER.id,
+                    Block.FLOWING_WATER.id,
+
+                    Block.CHEST.id,
+                    Block.LOCKED_CHEST.id,
+                    Block.MOB_SPAWNER.id,
+                    Block.FURNACE.id,
+                    Block.WORKBENCH.id,
+                    Block.WOOD_DOOR.id,
+                    Block.IRON_DOOR.id
+            );
+        }
+
+        public boolean isWhitelist() {
+            return isWhitelist;
+        }
+
+        public void setIsWhitelist(boolean isWhitelist) {
+            this.isWhitelist = isWhitelist;
+        }
+
+        public boolean shouldRender(int blockId) {
+            return isWhitelist == blockIdSet.contains(blockId);
+        }
+    }
+
     public static final Module moduleList = new Module("Module List").enabled().withKeyBinding(Keyboard.KEY_RSHIFT);
     public static final Module autoWalk = new Module("Auto Walk", enabled -> {
         if (!enabled) {
@@ -79,7 +134,12 @@ public class UtilityModules {
             minecraft.player.playerKeypressManager.onKeyPressed(minecraft.options.forwardKey.key, false);
         }
     });
-    public static final Module xray = new Module("X-ray");
+    public static final XrayModule xray = new XrayModule("X-ray", enabled -> {
+        UtilityUtils.getMinecraft().levelRenderer.updateFromOptions();
+    });
+    public static final Module fullBright = new Module("Full Bright", enabled -> {
+        UtilityUtils.getMinecraft().levelRenderer.updateFromOptions();
+    });
     public static final Module tracer = new Module("Tracer");
 
     @EventListener
@@ -100,5 +160,10 @@ public class UtilityModules {
                 module.toggle();
             }
         }
+    }
+
+    @EventListener
+    public void xrayRegisterDefaultSet(BlockRegistryEvent event) {
+        xray.registerDefaultSet();
     }
 }
