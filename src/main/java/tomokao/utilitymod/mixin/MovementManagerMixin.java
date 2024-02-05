@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tomokao.utilitymod.UtilityModules;
 
 @Mixin(MovementManager.class)
-public abstract class AutoWalkMixin {
+public abstract class MovementManagerMixin {
     @Shadow
     private boolean[] keys = new boolean[10];
 

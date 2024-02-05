@@ -8,8 +8,10 @@
   "server": [
   ],
   "client": [
-    "AutoWalkMixin",
-    "ModuleListMixin"
+    "AreaRendererMixin",
+    "BlockMixin",
+    "InGameMixin",
+    "MovementManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
