@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "utilitymod",
   "version": "${version}",
-
   "name": "Utility Mod",
   "description": "Utility Mod",
   "authors": [
@@ -12,10 +11,8 @@
     "homepage": "",
     "sources": ""
   },
-
   "license": "GPLv3",
   "icon": "assets/utilitymod/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "stationapi:event_bus": [
@@ -29,9 +26,8 @@
   "mixins": [
     "utilitymod.mixins.json"
   ],
-
   "depends": {
     "minecraft": "1.0.0-beta.7.3",
-    "stationapi": ">=2.0-alpha.1"
+    "stationapi": ">=2.0-alpha.1.1"
   }
 }
