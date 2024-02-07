@@ -148,6 +148,10 @@ public class UtilityModules {
 
     @EventListener
     public void keyPressed(KeyStateChangedEvent ignoredEvent) {
+        if (UtilityUtils.getMinecraft().currentScreen != null) {
+            return;
+        }
+
         for (var module : UtilityModules.getModules()) {
             if (Keyboard.getEventKeyState() && Keyboard.isKeyDown(module.getKeyBinding().key)) {
                 module.toggle();
