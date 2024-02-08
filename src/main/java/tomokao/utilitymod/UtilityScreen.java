@@ -143,8 +143,11 @@ public class UtilityScreen extends Screen {
                     screen.dragging = this;
                     screen.draggingOffsetX = clickX - x;
                     screen.draggingOffsetY = clickY - y;
+                    // Move to top
+                    moduleLists.remove(this);
+                    moduleLists.add(0, this);
                     return true;
-                } else if (inModuleList) {
+                } else if (inModuleList && !folded) {
                     var index = (clickY - y - nameBarHeight) / nameBarHeight;
                     modules.get(index).toggle();
                     return true;
