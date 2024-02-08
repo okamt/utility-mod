@@ -74,7 +74,7 @@ public class UtilityScreen extends Screen {
         public int y;
         public final int width = 64 + 32;
         public final int nameBarHeight = 14;
-        private int listHeight = 0;
+        private int listHeight;
         private final List<UtilityModules.Module> modules;
         public boolean folded = false;
 

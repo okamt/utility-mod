@@ -52,11 +52,6 @@ public class UtilityModules {
             return this;
         }
 
-        private Module withKeyBinding(int key) {
-            keyBinding = new KeyBinding(id, key);
-            return this;
-        }
-
         public boolean isEnabled() {
             return enabled;
         }
