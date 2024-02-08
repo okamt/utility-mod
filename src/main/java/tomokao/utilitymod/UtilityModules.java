@@ -10,6 +10,8 @@ import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegi
 import net.modificationstation.stationapi.api.event.registry.BlockRegistryEvent;
 import org.lwjgl.input.Keyboard;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,9 +30,9 @@ public class UtilityModules {
 
     public static class Module {
         public final String id;
-        private boolean enabled = false;
-        private KeyBinding keyBinding;
-        private final Consumer<Boolean> callback;
+        protected boolean enabled = false;
+        protected KeyBinding keyBinding;
+        protected final Consumer<Boolean> callback;
 
         public Module(String id, Consumer<Boolean> callback) {
             this.id = id;
@@ -47,7 +49,7 @@ public class UtilityModules {
             return keyBinding;
         }
 
-        private Module enabled() {
+        protected Module enabled() {
             setEnabled(true);
             return this;
         }
@@ -70,6 +72,49 @@ public class UtilityModules {
 
         public void toggle() {
             setEnabled(!isEnabled());
+        }
+
+        public Object getProperties() {
+            return null;
+        }
+    }
+
+    public static class TriggerModule extends Module {
+        protected final Runnable callback;
+
+        public TriggerModule(String id, Runnable callback) {
+            super(id);
+            this.callback = callback;
+        }
+
+        @Override
+        protected Module enabled() {
+            throw new IllegalStateException("can't call enabled() on a trigger module, there is no enabled state");
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return false;
+        }
+
+        @Override
+        public void setEnabled(boolean enabled) {
+            if (!enabled) return;
+            trigger();
+        }
+
+        @Override
+        public void toggle() {
+            trigger();
+        }
+
+        public void trigger() {
+            try {
+                getMinecraft().overlay.addChatMessage(id + " §etriggered");
+                getMinecraft().soundHelper.playSound("random.click", 1.0F, 1.0F);
+            } catch (Exception ignored) {
+            }
+            callback.run();
         }
     }
 
@@ -130,7 +175,15 @@ public class UtilityModules {
     public static final XrayModule xray = new XrayModule("X-Ray", enabled -> getMinecraft().levelRenderer.updateFromOptions());
     public static final Module fullBright = new Module("Full Bright", enabled -> getMinecraft().levelRenderer.updateFromOptions());
     public static final Module noBreakDelay = new Module("No Break Delay");
-    public static final Module tracer = new Module("Tracer");
+    public static final Module getSeed = new TriggerModule("Get Seed", () -> {
+        var seed = Long.toString(getMinecraft().level.getSeed());
+        getMinecraft().player.sendMessage(seed + " (copied to clipboard)");
+        try {
+            StringSelection selection = new StringSelection(seed);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
+        } catch (Exception ignore) {
+        }
+    });
 
     @EventListener
     public void registerKeyBindings(KeyBindingRegisterEvent event) {
