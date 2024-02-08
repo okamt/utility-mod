@@ -141,7 +141,6 @@ public class UtilityScreen extends Screen {
                 } else if (inModuleList) {
                     var index = (clickY - y - nameBarHeight) / nameBarHeight;
                     modules.get(index).toggle();
-                    getMinecraft().soundHelper.playSound("random.click", 1.0F, 1.0F);
                     return true;
                 }
             } else if (button == 1) { // Right click
