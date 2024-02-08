@@ -271,6 +271,8 @@ public class UtilityScreen extends Screen {
 
     @EventListener
     public void keyPressed(KeyStateChangedEvent ignoredEvent) {
+        if (keyBinding.key == Keyboard.KEY_NONE) return;
+
         if (Keyboard.getEventKey() == keyBinding.key && Keyboard.getEventKeyState()) {
             var currentScreen = getMinecraft().currentScreen;
             if (currentScreen instanceof UtilityScreen) {
