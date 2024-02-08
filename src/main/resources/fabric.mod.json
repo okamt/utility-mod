@@ -18,7 +18,8 @@
     "stationapi:event_bus": [
     ],
     "stationapi:event_bus_client": [
-      "tomokao.utilitymod.UtilityModules"
+      "tomokao.utilitymod.UtilityModules",
+      "tomokao.utilitymod.UtilityScreen"
     ],
     "stationapi:event_bus_server": [
     ]

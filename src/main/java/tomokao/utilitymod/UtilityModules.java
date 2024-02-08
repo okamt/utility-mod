@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static tomokao.utilitymod.UtilityUtils.getMinecraft;
+
 @Environment(EnvType.CLIENT)
 public class UtilityModules {
     private static final ArrayList<Module> modules = new ArrayList<>();
@@ -50,7 +52,6 @@ public class UtilityModules {
             return this;
         }
 
-        @SuppressWarnings("SameParameterValue")
         private Module withKeyBinding(int key) {
             keyBinding = new KeyBinding(id, key);
             return this;
@@ -63,7 +64,7 @@ public class UtilityModules {
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
             try {
-                UtilityUtils.getMinecraft().overlay.addChatMessage(id + (enabled ? " enabled." : " disabled."));
+                getMinecraft().overlay.addChatMessage(id + (enabled ? " enabled." : " disabled."));
             } catch (Exception ignored) {
             }
             if (callback != null) {
@@ -123,15 +124,15 @@ public class UtilityModules {
         }
     }
 
-    public static final Module moduleList = new Module("Module List").enabled().withKeyBinding(Keyboard.KEY_RSHIFT);
+    public static final Module moduleList = new Module("Module List").enabled();
     public static final Module autoWalk = new Module("Auto Walk", enabled -> {
         if (!enabled) {
-            var minecraft = UtilityUtils.getMinecraft();
+            var minecraft = getMinecraft();
             minecraft.player.playerKeypressManager.onKeyPressed(minecraft.options.forwardKey.key, false);
         }
     });
-    public static final XrayModule xray = new XrayModule("X-ray", enabled -> UtilityUtils.getMinecraft().levelRenderer.updateFromOptions());
-    public static final Module fullBright = new Module("Full Bright", enabled -> UtilityUtils.getMinecraft().levelRenderer.updateFromOptions());
+    public static final XrayModule xray = new XrayModule("X-ray", enabled -> getMinecraft().levelRenderer.updateFromOptions());
+    public static final Module fullBright = new Module("Full Bright", enabled -> getMinecraft().levelRenderer.updateFromOptions());
     public static final Module noBreakDelay = new Module("No Break Delay");
     public static final Module tracer = new Module("Tracer");
 
@@ -148,7 +149,7 @@ public class UtilityModules {
 
     @EventListener
     public void keyPressed(KeyStateChangedEvent ignoredEvent) {
-        if (UtilityUtils.getMinecraft().currentScreen != null) {
+        if (getMinecraft().currentScreen != null) {
             return;
         }
 
