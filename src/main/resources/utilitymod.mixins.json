@@ -15,7 +15,8 @@
     "InGameMixin",
     "MovementManagerMixin",
     "MultiPlayerClientInteractionManagerMixin",
-    "SinglePlayerClientInteractionManagerMixin"
+    "SinglePlayerClientInteractionManagerMixin",
+    "TextboxAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
