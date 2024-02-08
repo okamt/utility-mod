@@ -64,7 +64,8 @@ public class UtilityModules {
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
             try {
-                getMinecraft().overlay.addChatMessage(id + (enabled ? " enabled." : " disabled."));
+                getMinecraft().overlay.addChatMessage(id + (enabled ? " §aenabled" : " §4disabled"));
+                getMinecraft().soundHelper.playSound("random.click", 1.0F, enabled ? 1.0F : 0.5F);
             } catch (Exception ignored) {
             }
             if (callback != null) {
@@ -131,7 +132,7 @@ public class UtilityModules {
             minecraft.player.playerKeypressManager.onKeyPressed(minecraft.options.forwardKey.key, false);
         }
     });
-    public static final XrayModule xray = new XrayModule("X-ray", enabled -> getMinecraft().levelRenderer.updateFromOptions());
+    public static final XrayModule xray = new XrayModule("X-Ray", enabled -> getMinecraft().levelRenderer.updateFromOptions());
     public static final Module fullBright = new Module("Full Bright", enabled -> getMinecraft().levelRenderer.updateFromOptions());
     public static final Module noBreakDelay = new Module("No Break Delay");
     public static final Module tracer = new Module("Tracer");
