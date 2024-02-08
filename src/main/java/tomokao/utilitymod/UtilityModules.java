@@ -203,6 +203,8 @@ public class UtilityModules {
         }
 
         for (var module : UtilityModules.getModules()) {
+            if (module.getKeyBinding().key == Keyboard.KEY_NONE) continue;
+
             if (Keyboard.getEventKey() == module.getKeyBinding().key && Keyboard.getEventKeyState()) {
                 module.toggle();
             }
