@@ -36,7 +36,7 @@ public class UtilityScreen extends Screen {
         }
     }
 
-    public static int gradientColor1 = 0xFFB8B8B8;
+    public static int gradientColor1 = 0xFF000000;
     public static int gradientColor2 = 0xFF676767;
     private final Textbox gradientColor1Textbox;
     private final Textbox gradientColor2Textbox;
