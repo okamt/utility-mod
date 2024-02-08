@@ -25,7 +25,15 @@ public class UtilityScreen extends Screen {
 
     static {
         // TODO: Split into categories
-        moduleLists.add(new ModuleList("All", 4, 4, UtilityModules.getModules().stream().toList()));
+        moduleLists.add(new ModuleList("All", UtilityModules.getModules().stream().filter(m -> !(m instanceof UtilityModules.TriggerModule)).toList()));
+        moduleLists.add(new ModuleList("Trigger", UtilityModules.getModules().stream().filter(m -> m instanceof UtilityModules.TriggerModule).toList()));
+
+        int xOffset = 0;
+        for (var moduleList : moduleLists) {
+            moduleList.x = 4 + xOffset;
+            moduleList.y = 4;
+            xOffset += moduleList.width + 4;
+        }
     }
 
     public static int gradientColor1 = 0xFFB8B8B8;
@@ -74,14 +82,12 @@ public class UtilityScreen extends Screen {
         public int y;
         public final int width = 64 + 32;
         public final int nameBarHeight = 14;
-        private int listHeight;
+        private final int listHeight;
         private final List<UtilityModules.Module> modules;
         public boolean folded = false;
 
-        public ModuleList(String name, int x, int y, List<UtilityModules.Module> modules) {
+        public ModuleList(String name, List<UtilityModules.Module> modules) {
             this.name = name;
-            this.x = x;
-            this.y = y;
             this.modules = modules;
             listHeight = modules.size() * nameBarHeight;
         }
@@ -117,7 +123,7 @@ public class UtilityScreen extends Screen {
             if (!folded) {
                 int yOffset = nameBarHeight;
                 for (var module : modules) {
-                    int color = module.isEnabled() ? 0xFFFFFFFF : 0xFF808080;
+                    int color = (module.isEnabled() || module instanceof UtilityModules.TriggerModule) ? 0xFFFFFFFF : 0xFF808080;
                     drawTextWithShadow(textRenderer, module.id, x + 4, y + 4 + yOffset, color);
                     yOffset += nameBarHeight;
                 }
