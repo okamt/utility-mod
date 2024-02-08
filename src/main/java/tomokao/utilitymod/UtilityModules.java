@@ -155,7 +155,7 @@ public class UtilityModules {
         }
 
         for (var module : UtilityModules.getModules()) {
-            if (Keyboard.getEventKeyState() && Keyboard.isKeyDown(module.getKeyBinding().key)) {
+            if (Keyboard.getEventKey() == module.getKeyBinding().key && Keyboard.getEventKeyState()) {
                 module.toggle();
             }
         }
