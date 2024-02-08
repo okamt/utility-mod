@@ -59,6 +59,7 @@ public class UtilityScreen extends Screen {
     }
 
     // Empty constructor for StationAPI event bus only, should never be actually used
+    @SuppressWarnings("unused")
     public UtilityScreen() {
         width = 0;
         height = 0;
