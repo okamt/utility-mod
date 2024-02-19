@@ -7,15 +7,13 @@ import net.minecraft.block.Block;
 import net.minecraft.client.options.KeyBinding;
 import net.modificationstation.stationapi.api.client.event.keyboard.KeyStateChangedEvent;
 import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegisterEvent;
-import net.modificationstation.stationapi.api.event.registry.BlockRegistryEvent;
+import net.modificationstation.stationapi.api.event.mod.InitEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static tomokao.utilitymod.UtilityUtils.getMinecraft;
@@ -23,6 +21,26 @@ import static tomokao.utilitymod.UtilityUtils.getMinecraft;
 @Environment(EnvType.CLIENT)
 public class UtilityModules {
     private static final ArrayList<Module> modules = new ArrayList<>();
+
+    public static final Module moduleList = new Module("Module List").enabled();
+    public static final Module autoWalk = new Module("Auto Walk", enabled -> {
+        if (!enabled) {
+            var minecraft = getMinecraft();
+            minecraft.player.playerKeypressManager.onKeyPressed(minecraft.options.forwardKey.key, false);
+        }
+    });
+    public static final XRayModule xray = new XRayModule("X-Ray", enabled -> getMinecraft().levelRenderer.updateFromOptions());
+    public static final Module fullBright = new Module("Full Bright", enabled -> getMinecraft().levelRenderer.updateFromOptions());
+    public static final Module noBreakDelay = new Module("No Break Delay");
+    public static final Module getSeed = new TriggerModule("Get Seed", () -> {
+        var seed = Long.toString(getMinecraft().level.getSeed());
+        getMinecraft().player.sendMessage(seed + " (copied to clipboard)");
+        try {
+            StringSelection selection = new StringSelection(seed);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
+        } catch (Exception ignore) {
+        }
+    });
 
     public static List<Module> getModules() {
         return Collections.unmodifiableList(modules);
@@ -73,10 +91,6 @@ public class UtilityModules {
         public void toggle() {
             setEnabled(!isEnabled());
         }
-
-        public Object getProperties() {
-            return null;
-        }
     }
 
     public static class TriggerModule extends Module {
@@ -118,17 +132,20 @@ public class UtilityModules {
         }
     }
 
-    public static class XrayModule extends Module {
-        public final HashSet<Integer> blockIdSet = new HashSet<>();
-        private boolean isWhitelist = true;
+    public static class XRayModule extends Module {
+        public Config config = new Config();
 
-        public XrayModule(String id, Consumer<Boolean> callback) {
-            super(id, callback);
+        public static class Config {
+            @UtilityConfig.Name("Block List")
+            @UtilityConfig.Description("List of block IDs to render or not render")
+            public HashSet<Integer> blockList = new HashSet<>();
+            @UtilityConfig.Name("Is Whitelist")
+            @UtilityConfig.Description("Whether the blocks in the list should be exclusively rendered or not rendered")
+            public Boolean isWhitelist = true;
         }
 
-        private void registerDefaultSet() {
-            Collections.addAll(
-                    blockIdSet,
+        private static Set<Integer> getDefaultSet() {
+            return Set.of(
                     Block.DIAMOND_ORE.id,
                     Block.COAL_ORE.id,
                     Block.GOLD_ORE.id,
@@ -152,38 +169,29 @@ public class UtilityModules {
             );
         }
 
+        public XRayModule(String id, Consumer<Boolean> callback) {
+            super(id, callback);
+        }
+
         public boolean isWhitelist() {
-            return isWhitelist;
+            return config.isWhitelist;
         }
 
         public void setIsWhitelist(boolean isWhitelist) {
-            this.isWhitelist = isWhitelist;
+            config.isWhitelist = isWhitelist;
         }
 
         public boolean shouldRender(int blockId) {
-            return isWhitelist == blockIdSet.contains(blockId);
+            return config.isWhitelist == config.blockList.contains(blockId);
+        }
+
+        private void registerDefaultSet() {
+            if (config.blockList.isEmpty()) {
+                config.blockList.addAll(getDefaultSet());
+                UtilityConfig.save();
+            }
         }
     }
-
-    public static final Module moduleList = new Module("Module List").enabled();
-    public static final Module autoWalk = new Module("Auto Walk", enabled -> {
-        if (!enabled) {
-            var minecraft = getMinecraft();
-            minecraft.player.playerKeypressManager.onKeyPressed(minecraft.options.forwardKey.key, false);
-        }
-    });
-    public static final XrayModule xray = new XrayModule("X-Ray", enabled -> getMinecraft().levelRenderer.updateFromOptions());
-    public static final Module fullBright = new Module("Full Bright", enabled -> getMinecraft().levelRenderer.updateFromOptions());
-    public static final Module noBreakDelay = new Module("No Break Delay");
-    public static final Module getSeed = new TriggerModule("Get Seed", () -> {
-        var seed = Long.toString(getMinecraft().level.getSeed());
-        getMinecraft().player.sendMessage(seed + " (copied to clipboard)");
-        try {
-            StringSelection selection = new StringSelection(seed);
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
-        } catch (Exception ignore) {
-        }
-    });
 
     @EventListener
     public void registerKeyBindings(KeyBindingRegisterEvent event) {
@@ -211,8 +219,8 @@ public class UtilityModules {
         }
     }
 
-    @EventListener
-    public void xrayRegisterDefaultSet(BlockRegistryEvent event) {
+    @EventListener(phase = InitEvent.POST_INIT_PHASE)
+    public void postInitEvent(InitEvent event) {
         xray.registerDefaultSet();
     }
 }
